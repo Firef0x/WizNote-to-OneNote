@@ -19,7 +19,6 @@ CLIENT_ID = 'ddbd41a5-c46d-44f2-85b2-d73bbd7bee7d'
 CLIENT_SECRET = 'qqgu6ApNZyUmvYgna2WBwK5'
 REDIRECT_URI = 'https://login.live.com/oauth20_desktop.srf'
 
-LINUX_DATA_PATH = os.path.expanduser('~/.wiznote/{}/data')
 API_BASE = 'https://www.onenote.com/api/v1.0/me/notes'
 AUTH_URL = 'https://login.live.com/oauth20_authorize.srf?' + urlencode({
     'response_type': 'code',
@@ -43,13 +42,7 @@ class BearerAuth(AuthBase):
 
 def get_data_dir():
     while True:
-        if platform == 'linux':
-            account = input('Input WizNote account: ')
-            data_path = LINUX_DATA_PATH.format(account)
-        elif platform == 'win32' or platform == 'darwin':
-            data_path = input('Input WizNote dir path of "index.db": ')
-        else:
-            raise Exception('Unsupported platform')
+        data_path = input('Input WizNote dir path of "index.db": ')
 
         index_path = os.path.join(data_path, 'index.db')
         if not os.path.isfile(index_path):
@@ -62,11 +55,7 @@ def get_data_dir():
 
 
 def get_doc_path(data_path, doc):
-    if platform == 'linux' or platform == 'darwin':
-        return os.path.join(data_path, 'notes', '{%s}' % doc.guid)
-
-    if platform == 'win32':
-        return os.path.join(data_path, doc.location.strip('/'), doc.name)
+    return os.path.join(data_path, doc.location.strip('/'), doc.name)
 
     raise Exception('Unsupported platform')
 
